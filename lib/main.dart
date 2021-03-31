@@ -18,6 +18,8 @@ class _CJSState extends State<CJS> {
 
   String resultado = 'Resultado';
 
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
   void calcular(){
     double capitalN = double.parse(capital.text);
     double taxaN = double.parse(taxa.text)/100;
@@ -32,6 +34,15 @@ class _CJSState extends State<CJS> {
 
 
   }
+  String validacao(String value){
+    if (value.isEmpty){
+      return "Informe o valor";
+    }else{
+      if(double.parse(value)<=0){
+        return "Informe um valor maior que zero";
+      }
+    }
+  }
 
 
 
@@ -42,28 +53,44 @@ class _CJSState extends State<CJS> {
         title: Text("Calculadora de Juros Simples"),
         centerTitle: true,
       ),
-      body: Column(
+      body: Form(
+        key: formkey,
+        child:  Column(
         children: [
           TextFormField(
             controller: capital,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: 'Insira um valor de capital'),
+            validator: (value){
+              return validacao(value);
+            },
 
           ),
              TextFormField(
                controller: taxa,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: 'Insira um valor a taxa (més)'),
+             validator: (value){
+              return validacao(value);
+            },
+            
 
           ),
             TextFormField(
               controller: periodo,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: 'Insira o periodo(meses)'),
+             validator: (value){
+              return validacao(value);
+            },
 
           ),
           RaisedButton(
-            onPressed: (){calcular();},
+            onPressed: (){
+              if (formkey.currentState.validate()){
+                calcular();
+              }
+            },
             child: Text("Calcular"),
           ),
           Text(resultado)
@@ -72,6 +99,7 @@ class _CJSState extends State<CJS> {
           
         ],
       ),
+      )
       
     );
   }
